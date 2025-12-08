@@ -1,32 +1,25 @@
 <script setup>
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 
 const calc  = reactive({
     n1: '',
     n2: '',
-    resultado: ''
+    op: "soma",
 })
 
 //<=================================Funções para a calculadora=======================================>
-function somar() {
-    calc.resultado = Number(calc.n1) + Number(calc.n2);
-}
+const resultado = computed( () => {
+    const n1 = Number(calc.n1);
+    const n2 = Number(calc.n2);
 
-function sub() {
-    calc.resultado = Number(calc.n1) - Number(calc.n2);
-}
-
-function mult() {
-    calc.resultado = Number(calc.n1) * Number(calc.n2);
-}
-
-function div() {
-    calc.resultado = 
-        calc.n2 === 0
-            ?"Erro: divição por zero"
-            : Number(calc.n1) / Number(calc.n2);
-}
-
+    switch (calc.op) {
+        case "soma":return n1 + n2;
+        case "sub":return n1 - n2;
+        case "mult":return n1 * n2;
+        case "div": return n2 === 0 ?"Erro: Divisão por zero" : n1 / n2;
+        default: return '';
+    }
+})
 </script>
 
 <template>
@@ -45,29 +38,24 @@ function div() {
                     <input type="number" class="form-control" v-model="calc.n2">
                 </div>
             </div>
-            <form @submit.prevent>
-                <div class="row">
-                    <div :class="['col-6', 'mt-5', 'd-flex', 'justify-content-center']">
-                        <button @click.prevent="somar" type="submit" class="btn btn-primary">Soma +</button>
-                    </div>
-                    <div :class="['col-6', 'mt-5', 'd-flex', 'justify-content-center']">
-                        <button @click.prevent="div" type="submit" class="btn btn-primary">Divisão ÷</button>
-                    </div>
-                    <div :class="['col-6', 'mt-5', 'd-flex', 'justify-content-center']">
-                        <button @click.prevent="sub" type="submit" class="btn btn-primary">Subtração -</button>
-                    </div>
-                    <div :class="['col-6', 'mt-5', 'd-flex', 'justify-content-center']">
-                        <button @click.prevent="mult" type="submit" class="btn btn-primary">Multplicação ×</button>
-                    </div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <label for="form-label">Escolha a operação:</label>
+                    <select class="form-select" v-model="calc.op">
+                        <option value="soma">Somar (+)</option>
+                        <option value="sub">Subtração (-)</option>
+                        <option value="mult">Multiplicação (*)</option>
+                        <option value="div">Divisão (÷)</option>
+                    </select>
                 </div>
-                <div class="row">
-                    <div :class="['col', 'mt-5', 'd-flex', 'justify-content-center']">
-                        <p :class="['operacao']">
-                            Resultado: {{ calc.resultado }}
-                        </p>
-                    </div>
+            </div>
+            <div class="row">
+                <div class="col mt-5 d-flex justify-content-center">
+                    <p class="operacao">
+                        Resultado: {{ resultado }}
+                    </p>
                 </div>
-            </form>
+            </div>
 
         </div>
     </div>
